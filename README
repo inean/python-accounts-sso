@@ -11,11 +11,7 @@ requiriments:
 
 Steps:
 -----
-1.
-compile the project:
-    mkdir build
-    cd build
-    cmake ../
-    make
-    make install
+1. type setup.sh
+2. go to created build directory and type make && make install
+3. enjoy
 
