@@ -2,7 +2,7 @@
 
 rm -rf build
 mkdir -p build
-cd build && cmake ..
+cd build && cmake -DSITE_PACKAGE=$PWD/../ ..
 
 echo 
 echo "type cd build && make to build this"
