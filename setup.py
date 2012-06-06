@@ -2,8 +2,7 @@
 # coding: utf-8
 
 # distutils stuff
-from distutils import log
-from distutils.core import setup, Command, Extension
+from distutils.core import setup, Extension
 
 # utilities
 import os, re, sys, contextlib
@@ -36,7 +35,6 @@ class CMake(object):
             os.chdir(curdir)
 
     def _execute(self, action, command):
-        log.debug("invoking: '%s'", command)
         with self._chdir(self.BUILD_DIR):
             print command
             err = os.system(command)
@@ -75,62 +73,52 @@ class CMake(object):
             ' '.join(self.args) + ' '                            + \
             self.SRC_DIR
         
-##
 # Build commands
-#
 from distutils.command.build_ext import build_ext as _build_ext
-
 class build_ext(_build_ext):
     def run (self):
         for ext in self.distribution.ext_modules:
-            log.info("building '%s' python module", ext.name)
             CMake.instance().build(ext.name)
 
-###
 # Install commands
-#
 from distutils.command.install_lib import install_lib as _install_lib
-
 class install_lib(_install_lib):
     def run(self):
-        log.info("installing")
         args = ["-DSITE_PACKAGE:PATH=%s" % self.install_dir]
         CMake.instance(self.optimize, *args).install(True)
 
-###
 # clean and config
-#
 from distutils.command.clean  import clean as _clean
-
 class clean(_clean):
     def run(self):
         CMake.instance().clean()
+
         
-setup( name         = 'accountsSSO',
-       version      = '0.0.2',       
-       author       = 'Carlos Martín',
-       author_email = 'inean.es@gmail.com',
-       url          = 'https://github.com/inean/python-accounts-sso',
-       license      = 'BSD',
-       description  = 'AccountSSO bindings for Harmattan platform',
+setup(name         = 'accountsSSO',
+      version      = '0.0.2',       
+      author       = 'Carlos Martín',
+      author_email = 'inean.es@gmail.com',
+      url          = 'https://github.com/inean/python-accounts-sso',
+      license      = 'LGPL2',
+      description  = 'AccountSSO bindings for Harmattan platform',
+      
+      classifiers  = [
+          "Development Status :: 4 - Beta",
+          "Topic :: Utilities",
+          "License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)",
+      ],
 
-       classifiers  = [
-           "Development Status :: 3 - Alpha",
-           "Topic :: Utilities",
-           "License :: OSI Approved :: BSD License",
-       ],
-
-       cmdclass     = {
-           'clean'       : clean,
-           'build_ext'   : build_ext,
-           'install_lib' : install_lib, 
-       },
-              
-       ext_modules  = [
-           Extension('Providers', ['dummy.cpp']),
-           Extension('Accounts',  ['dummy.cpp']),
-           Extension('SignOn',    ['dummy.cpp']),
-       ]
-   )
+      cmdclass     = {
+          'clean'       : clean,
+          'build_ext'   : build_ext,
+          'install_lib' : install_lib, 
+      },
+      
+      ext_modules  = [
+          Extension('Providers', ['dummy.cpp']),
+          Extension('Accounts',  ['dummy.cpp']),
+          Extension('SignOn',    ['dummy.cpp']),
+      ]
+  )
       
 
