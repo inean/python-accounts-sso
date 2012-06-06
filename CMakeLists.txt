@@ -25,35 +25,43 @@ set(BINDING_API_MAJOR_VERSION "0")
 set(BINDING_API_MINOR_VERSION "0")
 set(BINDING_API_MICRO_VERSION "1")
 set(BINDING_API_RELEASE_LEVEL "0m6")
-set(BINDING_API_VERSION "${BINDING_API_MAJOR_VERSION}.${BINDING_API_MINOR_VERSION}.${BINDING_API_MICRO_VERSION}" CACHE STRING "PySide version" FORCE)
+set(BINDING_API_VERSION "${BINDING_API_MAJOR_VERSION}.${BINDING_API_MINOR_VERSION}.${BINDING_API_MICRO_VERSION}"
+	CACHE STRING "PySide version"
+	FORCE
+)
 
-#set(LIB_SUFFIX "" CACHE STRING "Define suffix of directory name (32/64)" )
-#set(LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}" CACHE PATH "The subdirectory relative to the install prefix where libraries will be installed (default is /lib${LIB_SUFFIX})" FORCE)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/__init__.py.in" 
+               "${CMAKE_CURRENT_BINARY_DIR}/__init__.py" 
+               @ONLY
+)
 
 include(${QT_USE_FILE})
 
-# uninstall target
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake"
-               "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-               IMMEDIATE @ONLY)
+# Set the install prefix
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+   execute_process(
+        COMMAND ${SHIBOKEN_PYTHON_INTERPRETER} -c "import sys; print sys.prefix"
+        OUTPUT_VARIABLE DEFAULT_INSTALL_PATH
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+   if (NOT DEFAULT_INSTALL_PATH)
+        message(FATAL_ERROR "Could not detect Python module installation directory.")
+   endif()
+   set (CMAKE_INSTALL_PREFIX ${DEFAULT_INSTALL_PATH}
+            CACHE STRING "Install Path"
+	    FORCE
+   )
+endif()
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/__init__.py.in"
-               "${CMAKE_CURRENT_BINARY_DIR}/__init__.py" @ONLY)
-
-add_custom_target(uninstall "${CMAKE_COMMAND}"
-                  -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
-
-if (NOT SITE_PACKAGE)
+if(NOT SITE_PACKAGE)
     execute_process(
         COMMAND ${SHIBOKEN_PYTHON_INTERPRETER} -c "from distutils import sysconfig; \\
-            print sysconfig.get_python_lib(1,0,prefix='${CMAKE_INSTALL_PREFIX}')"
+            import os; print os.path.join('${CMAKE_INSTALL_PREFIX}', sysconfig.get_python_lib(1,0,prefix=os.sep)[1:])"
         OUTPUT_VARIABLE SITE_PACKAGE
         OUTPUT_STRIP_TRAILING_WHITESPACE)
     if (NOT SITE_PACKAGE)
         message(FATAL_ERROR "Could not detect Python module installation directory.")
     endif()
 endif()
-
 
 set(ARCHIVE_NAME python-accounts-sso-${BINDING_API_VERSION})
 add_custom_target(dist
@@ -64,7 +72,6 @@ add_custom_target(dist
             bzip2 -f9 "${CMAKE_BINARY_DIR}/${ARCHIVE_NAME}.tar" &&
             echo "Source package created at ${CMAKE_BINARY_DIR}/${ARCHIVE_NAME}.tar.bz2.\n"
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-
 
 if(CMAKE_HOST_UNIX)
     option(ENABLE_GCC_OPTIMIZATION "Enable specific GCC flags to optimization library size and performance. Only available on Release Mode" 0)
@@ -77,10 +84,6 @@ if(CMAKE_HOST_UNIX)
     endif()
 endif()
 
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
-endif()
-
 set(GENERATOR_EXTRA_FLAGS --generator-set=shiboken --enable-parent-ctor-heuristic --enable-pyside-extensions --enable-return-value-heuristic)
 add_subdirectory(accounts)
 add_subdirectory(signon)
@@ -88,5 +91,5 @@ add_subdirectory(providers)
 
 # install
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/__init__.py"
-        DESTINATION "${SITE_PACKAGE}/${BINDING_NAME}${pyside_SUFFIX}")
+        DESTINATION "$ENV{DESTDIR}${SITE_PACKAGE}/${BINDING_NAME}${pyside_SUFFIX}")
 
