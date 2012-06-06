@@ -8,10 +8,3 @@ requiriments:
     * accounts.qt
     * signon-qt
     * AccountSetup
-
-Steps:
------
-1. type setup.sh
-2. go to created build directory and type make && make install
-3. enjoy
-

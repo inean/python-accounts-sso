@@ -37,25 +37,10 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/__init__.py.in"
 
 include(${QT_USE_FILE})
 
-# Set the install prefix
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-   execute_process(
-        COMMAND ${SHIBOKEN_PYTHON_INTERPRETER} -c "import sys; print sys.prefix"
-        OUTPUT_VARIABLE DEFAULT_INSTALL_PATH
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
-   if (NOT DEFAULT_INSTALL_PATH)
-        message(FATAL_ERROR "Could not detect Python module installation directory.")
-   endif()
-   set (CMAKE_INSTALL_PREFIX ${DEFAULT_INSTALL_PATH}
-            CACHE STRING "Install Path"
-	    FORCE
-   )
-endif()
-
 if(NOT SITE_PACKAGE)
     execute_process(
         COMMAND ${SHIBOKEN_PYTHON_INTERPRETER} -c "from distutils import sysconfig; \\
-            import os; print os.path.join('${CMAKE_INSTALL_PREFIX}', sysconfig.get_python_lib(1,0,prefix=os.sep)[1:])"
+            print sysconfig.get_python_lib(1,0)"
         OUTPUT_VARIABLE SITE_PACKAGE
         OUTPUT_STRIP_TRAILING_WHITESPACE)
     if (NOT SITE_PACKAGE)
@@ -91,5 +76,5 @@ add_subdirectory(providers)
 
 # install
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/__init__.py"
-        DESTINATION "$ENV{DESTDIR}${SITE_PACKAGE}/${BINDING_NAME}${pyside_SUFFIX}")
+        DESTINATION "${SITE_PACKAGE}/${BINDING_NAME}${pyside_SUFFIX}")
 
