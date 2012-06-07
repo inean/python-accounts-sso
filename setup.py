@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # distutils stuff
-from distutils.core import setup, Extension
+from setuptools import setup, Extension
 
 # utilities
 import os, re, sys, contextlib
@@ -74,17 +74,17 @@ class CMake(object):
             self.SRC_DIR
         
 # Build commands
-from distutils.command.build_ext import build_ext as _build_ext
+from setuptools.command.build_ext import build_ext as _build_ext
 class build_ext(_build_ext):
     def run (self):
         for ext in self.distribution.ext_modules:
             CMake.instance().build(ext.name)
 
 # Install commands
-from distutils.command.install_lib import install_lib as _install_lib
+from setuptools.command.install_lib import install_lib as _install_lib
 class install_lib(_install_lib):
     def run(self):
-        args = ["-DSITE_PACKAGE:PATH=%s" % self.install_dir]
+        args = ["-DSITE_PACKAGE:PATH=%s" % os.path.abspath(self.install_dir)]
         CMake.instance(self.optimize, *args).install(True)
 
 # clean and config
@@ -95,7 +95,7 @@ class clean(_clean):
 
         
 setup(name         = 'accountsSSO',
-      version      = '0.0.2',       
+      version      = '0.0.3',
       author       = 'Carlos Martín',
       author_email = 'inean.es@gmail.com',
       url          = 'https://github.com/inean/python-accounts-sso',

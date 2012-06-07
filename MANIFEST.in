@@ -1,5 +1,7 @@
 global-include *
+prune .*
+prune .*py?
 prune build
 prune dist
-exclude .gitignore
 exclude MANIFEST
+exclude .gitignore
