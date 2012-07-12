@@ -1,9 +1,8 @@
 project(python-accounts-sso)
 
 cmake_minimum_required(VERSION 2.6)
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Macros
-                      ${CMAKE_MODULE_PATH})
 
+# Required pyside packages
 find_package(PythonLibs REQUIRED)
 find_package(GeneratorRunner REQUIRED)
 find_package(Shiboken REQUIRED)
