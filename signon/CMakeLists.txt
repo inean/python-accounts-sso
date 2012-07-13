@@ -4,7 +4,10 @@ set(SignOn_SRC
     ${CMAKE_CURRENT_BINARY_DIR}/SignOn/signon_module_wrapper.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/SignOn/signon_authservice_wrapper.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/SignOn/signon_identityinfo_wrapper.cpp
-   ${CMAKE_CURRENT_BINARY_DIR}/SignOn/signon_error_wrapper.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/SignOn/signon_error_wrapper.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/SignOn/signon_sessiondata_wrapper.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/SignOn/signon_identity_wrapper.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/SignOn/signon_authsession_wrapper.cpp
 
 )
 

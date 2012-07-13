@@ -8,4 +8,9 @@
 #include "pyside_global.h"
 
 #include <authservice.h>
+#include <authsession.h>
 #include <indentity.h>
+#include <sessiondata.h>
+#include <signon.h>
+#include <identityinfo.h>
+#include <error.h>
