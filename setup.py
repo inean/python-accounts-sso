@@ -95,7 +95,7 @@ class clean(_clean):
 
         
 setup(name         = 'accountsSSO',
-      version      = '0.0.4',
+      version      = '0.0.5',
       author       = 'Carlos Martín',
       author_email = 'inean.es@gmail.com',
       url          = 'https://github.com/inean/python-accounts-sso',

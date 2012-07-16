@@ -24,6 +24,19 @@
 
     <object-type name="Identity">
       <enum-type name="IdentityError"/>
+
+      <!-- Really we are returning SignOn::AuthSession* -->
+      <add-function signature="createSession(const QString&amp;)" return-type="SignOn::AuthSession">
+        <inject-code>
+	  %BEGIN_ALLOW_THREADS
+	  QPointer&lt;%RETURN_TYPE&gt; %0 = %CPPSELF.%FUNCTION_NAME(%1);
+	  %END_ALLOW_THREADS
+	  if (!%0.isNull()) {
+	      %PYARG_0 = %CONVERTTOPYTHON[%RETURN_TYPE*](%0.data());
+	  }
+        </inject-code>
+      </add-function>
+
     </object-type>
 
     <object-type name="IdentityInfo">
