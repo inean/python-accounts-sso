@@ -39,9 +39,9 @@
 
     </object-type>
 
-    <object-type name="IdentityInfo">
+    <value-type name="IdentityInfo">
       <enum-type name="CredentialsType"/>
-    </object-type>
+    </value-type>
 
     <value-type name="SessionData">
       <modify-function signature="operator+=(SignOn::SessionData)" remove="all"/>
